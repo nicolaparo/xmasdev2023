@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/CookieFactory.Collector/appsettings.local.json
+/CookieFactory.Api/appsettings.local.json
