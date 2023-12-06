@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookieFactory.Collector", "CookieFactory.Collector\CookieFactory.Collector.csproj", "{040D0F37-06B1-475F-B2C3-C363EE19852F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieFactory.Collector", "CookieFactory.Collector\CookieFactory.Collector.csproj", "{040D0F37-06B1-475F-B2C3-C363EE19852F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookieFactory.Portal", "CookieFactory.Portal\CookieFactory.Portal.csproj", "{691E3A29-1AB3-4DD5-924E-0DE7F88C7057}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieFactory.Portal", "CookieFactory.Portal\CookieFactory.Portal.csproj", "{691E3A29-1AB3-4DD5-924E-0DE7F88C7057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookieFactory.Api", "CookieFactory.Api\CookieFactory.Api.csproj", "{F0628C93-BEA2-452F-BC37-4AEF77EF06F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieFactory.Api", "CookieFactory.Api\CookieFactory.Api.csproj", "{F0628C93-BEA2-452F-BC37-4AEF77EF06F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieFactory.Minecraft", "CookieFactory.Minecraft\CookieFactory.Minecraft.csproj", "{1C47CC96-ACCE-40BF-AF88-F7A0744EE55D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookieFactory.Receiver", "CookieFactory.Receiver\CookieFactory.Receiver.csproj", "{5803970E-5984-4D54-AFC2-A3C43732B5B4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieFactory.Shared", "CookieFactory.Shared\CookieFactory.Shared.csproj", "{81E461F4-17BE-497B-9E4D-43A7196A93A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +33,18 @@ Global
 		{F0628C93-BEA2-452F-BC37-4AEF77EF06F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0628C93-BEA2-452F-BC37-4AEF77EF06F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0628C93-BEA2-452F-BC37-4AEF77EF06F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C47CC96-ACCE-40BF-AF88-F7A0744EE55D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C47CC96-ACCE-40BF-AF88-F7A0744EE55D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C47CC96-ACCE-40BF-AF88-F7A0744EE55D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C47CC96-ACCE-40BF-AF88-F7A0744EE55D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5803970E-5984-4D54-AFC2-A3C43732B5B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5803970E-5984-4D54-AFC2-A3C43732B5B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5803970E-5984-4D54-AFC2-A3C43732B5B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5803970E-5984-4D54-AFC2-A3C43732B5B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81E461F4-17BE-497B-9E4D-43A7196A93A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81E461F4-17BE-497B-9E4D-43A7196A93A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81E461F4-17BE-497B-9E4D-43A7196A93A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81E461F4-17BE-497B-9E4D-43A7196A93A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,10 @@ namespace CookieFactory.Portal
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+            var webSocketClient = new WebSocketClient("");
+            builder.Services.AddSingleton(webSocketClient);
+
+            await webSocketClient.ConnectAsync(CancellationToken.None);
             await builder.Build().RunAsync();
         }
     }

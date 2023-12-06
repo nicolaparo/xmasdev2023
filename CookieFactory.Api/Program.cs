@@ -1,4 +1,6 @@
 
+using Microsoft.Data.SqlClient;
+
 namespace CookieFactory.Api
 {
     public class Program
@@ -11,6 +13,9 @@ namespace CookieFactory.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddScoped(s => new SqlConnection(builder.Configuration.GetConnectionString("SqlConnectionString")));
+            builder.Services.AddScoped<CookieFactoryMetricsService>();
+
             var app = builder.Build();
 
             app.UseSwagger();
@@ -18,6 +23,8 @@ namespace CookieFactory.Api
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
+
+            app.MapCookieFactoryEndpoints();
 
             app.Run();
         }
