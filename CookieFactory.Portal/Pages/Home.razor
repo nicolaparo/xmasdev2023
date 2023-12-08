@@ -1,13 +1,141 @@
 ﻿@page "/"
-@inject WebSocketClient webSocket
+@using CookieFactory.Shared
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using System.Text.Json
+
+@inject HttpClient httpClient
+@inject WebPubSubClient webPubSubClient
+@implements IDisposable
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<style>
+    .table-container {
+        height: 20rem;
+        overflow-y: auto;
+    }
 
-Welcome to your new app.
+    thead {
+        position: sticky;
+        top: 0;
+        background-color: #eee;
+    }
+</style>
 
-@code{
+<div class="w-50 m-auto pb-5">
+    <div class="card bg-success text-white">
+        <div class="card-body text-center">
+            <p> Produced cookies </p>
+            <div class="h1">
+                @if (TotalProducedCookies.HasValue)
+                {
+                    @TotalProducedCookies
+                    @:&nbsp;Cookies
+                }
+                else
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-    
+
+<h2>Events</h2>
+<div class="row p-2">
+    <div class="col">
+        <label for="fromDate">From</label>
+        <input class="form-control" type="datetime-local" id="fromDate" @bind="fromDate" />
+    </div>
+    <div class="col">
+        <label for="toDate">To</label>
+        <input class="form-control" type="datetime-local" id="toDate" @bind="toDate" />
+    </div>
+    <div class="col-2">
+        <label>&nbsp;</label>
+        <button type="button" class="btn btn-primary w-100" @onclick="LoadEventsAsync">
+            Load Events
+        </button>
+    </div>
+</div>
+
+<div class="table-container">
+    <QuickGrid Pagination="pagination" Items="events.AsQueryable()" Class="table">
+        <PropertyColumn Property="@(c => c.Timestamp)" />
+        <PropertyColumn Property="@(c => c.Type)" />
+        <PropertyColumn Property="@(c => c.Message)" />
+        <PropertyColumn Property="@(c => c.Data)" />
+    </QuickGrid>
+</div>
+
+<div class="position-fixed" style="top: 60px; right: 10px; width: 500px">
+    @foreach (var realTimeEvent in realTimeEvents)
+    {
+        var rte = realTimeEvent;
+
+        <div class="alert alert-dismissible alert-@(GetSeverityClass(rte.Severity)) mb-2">
+            <button type="button" class="btn-close" @onclick="() => realTimeEvents.Remove(rte)"></button>
+            <h4 class="alert-heading">@rte.Message</h4>
+            <p class="mb-0">@rte.Data</p>
+        </div>
+    }
+</div>
+
+@code {
+    private PaginationState pagination = new();
+    private DateTime fromDate = DateTime.Now.AddHours(-1);
+    private DateTime toDate = DateTime.Now;
+    private int? TotalProducedCookies;
+    private List<CookieFactoryEvent> events = new();
+    private List<CookieFactoryEvent> realTimeEvents = new();
+
+    private static string GetSeverityClass(CookieFactoryEventSeverity severity)
+    {
+        return severity switch
+        {
+            CookieFactoryEventSeverity.Info => "info",
+            CookieFactoryEventSeverity.Success => "success",
+            CookieFactoryEventSeverity.Warning => "warning",
+            CookieFactoryEventSeverity.Error => "danger",
+            _ => "secondary"
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            webPubSubClient.OnMessage += OnMessageReceivedAsync;
+
+            await LoadEventsAsync();
+            await LoadTotalProducedCookiesAsync();
+        }
+    }
+
+    private async Task OnMessageReceivedAsync(string payload)
+    {
+        var deserialized = JsonSerializer.Deserialize<CloudEvent>(payload);
+        var cookieFactoryEvent = deserialized.Data.Deserialize<CookieFactoryEvent>();
+        realTimeEvents.Add(cookieFactoryEvent);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadEventsAsync()
+    {
+        var uri = $"https://xmasdev-api.azurewebsites.net/metrics?fromDate={Uri.EscapeDataString(fromDate.ToString("O"))}&toDate={Uri.EscapeDataString(toDate.ToString("O"))}&token=XmasDevSharedAccessKey";
+        var events = await httpClient.GetFromJsonAsync<List<CookieFactoryEvent>>(uri);
+        this.events = events;
+        StateHasChanged();
+    }
+    private async Task LoadTotalProducedCookiesAsync()
+    {
+        TotalProducedCookies = await httpClient.GetFromJsonAsync<int?>($"https://xmasdev-api.azurewebsites.net/cookies?token=XmasDevSharedAccessKey");
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        webPubSubClient.OnMessage -= OnMessageReceivedAsync;
+    }
 }

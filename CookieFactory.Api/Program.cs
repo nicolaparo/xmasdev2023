@@ -8,12 +8,13 @@ namespace CookieFactory.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.AddJsonFile("appsettings.local.json", true);
 
             builder.Services.AddAuthorization();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped(s => new SqlConnection(builder.Configuration.GetConnectionString("SqlConnectionString")));
+            builder.Services.AddScoped(s => new SqlConnection(builder.Configuration["SqlConnectionString"]));
             builder.Services.AddScoped<CookieFactoryMetricsService>();
 
             var app = builder.Build();
@@ -24,7 +25,9 @@ namespace CookieFactory.Api
             app.UseHttpsRedirection();
             app.UseAuthorization();
 
-            app.MapCookieFactoryEndpoints();
+            var sharedSecretKey = app.Configuration["SharedSecretKey"];
+
+            app.MapCookieFactoryEndpoints(sharedSecretKey);
 
             app.Run();
         }

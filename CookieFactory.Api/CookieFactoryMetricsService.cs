@@ -6,21 +6,27 @@ namespace CookieFactory.Api
 {
     public static class CookieFactoryMetricsEndpoints
     {
-        public static void MapCookieFactoryEndpoints(this WebApplication app)
+        public static void MapCookieFactoryEndpoints(this WebApplication app, string sharedSecretKey)
         {
-            app.MapGet("/metrics", async (CookieFactoryMetricsService metricsService, DateTimeOffset? fromDate, DateTimeOffset? toDate) =>
+            app.MapGet("/metrics", async (CookieFactoryMetricsService metricsService, string token, DateTime? fromDate, DateTime? toDate) =>
             {
-                var fromDateValue = fromDate ?? DateTimeOffset.UtcNow.AddHours(-1);
+                if(!token.Equals(sharedSecretKey, StringComparison.Ordinal))
+                    return Results.Unauthorized();
+
+                var fromDateValue = fromDate ?? DateTime.UtcNow.AddHours(-1);
 
                 var events = await metricsService.GetEventsAsync(fromDateValue, toDate);
 
-                return events;
+                return Results.Ok(events);
             });
-            app.MapGet("/cookies", async (CookieFactoryMetricsService metricsService) =>
+            app.MapGet("/cookies", async (CookieFactoryMetricsService metricsService, string token) =>
             {
+                if (!token.Equals(sharedSecretKey, StringComparison.Ordinal))
+                    return Results.Unauthorized();
+
                 var producedCookies = await metricsService.GetProducedCookiesAsync();
 
-                return producedCookies;
+                return Results.Ok(producedCookies);
             });
         }
     }

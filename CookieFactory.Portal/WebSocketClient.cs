@@ -1,18 +1,22 @@
 ﻿using System.Net.WebSockets;
 using System.Text.Json;
 using System.Text;
+using System.Net.Http.Json;
 
 namespace CookieFactory.Portal
 {
-    public class WebSocketClient : IDisposable
-    {
-        private readonly ClientWebSocket webSocket;
-        private readonly string webSocketUri;
 
-        public WebSocketClient(string webSocketUri)
+    public class WebPubSubClient : IDisposable
+    {
+        private readonly string negotiatorFunctionUri;
+        private readonly string accesskey;
+        private readonly ClientWebSocket webSocket;
+
+        public WebPubSubClient(string negotiatorFunctionUri, string accesskey = null)
         {
-            this.webSocket = new ClientWebSocket();
-            this.webSocketUri = webSocketUri;
+            this.negotiatorFunctionUri = negotiatorFunctionUri;
+            this.accesskey = accesskey;
+            webSocket = new ClientWebSocket();
         }
 
         private Task backgroundWorker;
@@ -22,7 +26,15 @@ namespace CookieFactory.Portal
 
         public async Task ConnectAsync(CancellationToken cancellationToken)
         {
-            
+            var httpClient = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, negotiatorFunctionUri);
+
+            if (accesskey is not null)
+                request.Headers.Add("x-functions-key", accesskey);
+
+            var response = await httpClient.SendAsync(request, cancellationToken);
+            var result = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken);
+            var webSocketUri = result.GetProperty("url").GetString();
             await webSocket.ConnectAsync(new Uri(webSocketUri), cancellationToken);
             backgroundWorker = RunAsync(cts.Token);
         }

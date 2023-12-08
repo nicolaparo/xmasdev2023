@@ -11,12 +11,12 @@ namespace CookieFactory.Portal
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
+            var webPubSubClient = new WebPubSubClient(@"https://xmasdev-receiver.azurewebsites.net/api/negotiate");
+            await webPubSubClient.ConnectAsync(CancellationToken.None);
+
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton(webPubSubClient);
 
-            var webSocketClient = new WebSocketClient("");
-            builder.Services.AddSingleton(webSocketClient);
-
-            await webSocketClient.ConnectAsync(CancellationToken.None);
             await builder.Build().RunAsync();
         }
     }
