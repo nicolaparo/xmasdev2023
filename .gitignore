@@ -398,3 +398,6 @@ FodyWeavers.xsd
 *.sln.iml
 /CookieFactory.Collector/appsettings.local.json
 /CookieFactory.Api/appsettings.local.json
+
+.env
+/minecraft/server.jar
